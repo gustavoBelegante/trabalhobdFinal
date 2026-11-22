@@ -23,10 +23,7 @@ GO
 -- 3. COR
 CREATE TABLE COR (
     id_cor TINYINT IDENTITY(1,1) NOT NULL,
-    nome_cor VARCHAR(40) NOT NULL,
-    codigo_hex CHAR(7) NOT NULL,
-    CONSTRAINT PK_Cor PRIMARY KEY (id_cor),
-    CONSTRAINT UQ_Cor_Nome UNIQUE (nome_cor)
+    nome_cor VARCHAR(40) NOT NULL
 );
 GO
 
@@ -134,4 +131,56 @@ CREATE TABLE MOVIMENTACAO_ESTOQUE (
     CONSTRAINT CK_Movimentacao_Tipo CHECK (tipo_movimentacao IN ('ENTRADA', 'SAIDA_VENDA', 'DEVOLUCAO', 'AJUSTE')),
     CONSTRAINT CK_Movimentacao_Qtd CHECK (quantidade <> 0)
 );
+GO
+
+-- 11. CLIENTE
+CREATE TABLE CLIENTE (
+    id_cliente INT IDENTITY(1,1) NOT NULL,
+    nome_completo VARCHAR(120) NOT NULL,
+    cpf CHAR(11) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    cidade VARCHAR(80) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    CONSTRAINT PK_Cliente PRIMARY KEY (id_cliente),
+    CONSTRAINT UQ_Cliente_Cpf UNIQUE (cpf)
+);
+GO
+
+-- 12. VENDA
+CREATE TABLE VENDA (
+    id_venda INT IDENTITY(1,1) NOT NULL,
+    id_cliente INT NOT NULL,
+    data_venda DATETIME2(0) NOT NULL CONSTRAINT DF_Venda_Data DEFAULT SYSDATETIME(),
+    status_pedido VARCHAR(15) NOT NULL CONSTRAINT DF_Venda_Status DEFAULT 'PAGO',
+    valor_total DECIMAL(12, 2) NOT NULL,
+    CONSTRAINT PK_Venda PRIMARY KEY (id_venda),
+    CONSTRAINT FK_Venda_Cliente FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente),
+    CONSTRAINT CK_Venda_Status CHECK (status_pedido IN ('PENDENTE', 'PAGO', 'ENVIADO', 'CANCELADO')),
+    CONSTRAINT CK_Venda_Valor CHECK (valor_total >= 0)
+);
+GO
+
+-- 13. ITEM_VENDA
+CREATE TABLE ITEM_VENDA (
+    id_item_venda INT IDENTITY(1,1) NOT NULL,
+    id_venda INT NOT NULL,
+    id_variacao INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT PK_ItemVenda PRIMARY KEY (id_item_venda),
+    CONSTRAINT FK_ItemVenda_Venda FOREIGN KEY (id_venda) REFERENCES VENDA(id_venda),
+    CONSTRAINT FK_ItemVenda_Variacao FOREIGN KEY (id_variacao) REFERENCES PRODUTO_VARIACAO(id_variacao),
+    CONSTRAINT UQ_ItemVenda_Unico UNIQUE (id_venda, id_variacao),
+    CONSTRAINT CK_ItemVenda_Qtd CHECK (quantidade > 0),
+    CONSTRAINT CK_ItemVenda_Preco CHECK (preco_unitario >= 0)
+);
+GO
+
+-- Ajuste na MOVIMENTACAO_ESTOQUE 
+ALTER TABLE MOVIMENTACAO_ESTOQUE
+ADD id_venda INT NULL;
+GO
+
+ALTER TABLE MOVIMENTACAO_ESTOQUE
+ADD CONSTRAINT FK_Movimentacao_Venda FOREIGN KEY (id_venda) REFERENCES VENDA(id_venda);
 GO
