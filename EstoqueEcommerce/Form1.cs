@@ -197,7 +197,7 @@ namespace EstoqueEcommerce
 
         private void btnCadastrar_Click_Click(object sender, EventArgs e)
         {
-        
+
             if (string.IsNullOrWhiteSpace(txtNomeProduto.Text))
             {
                 MessageBox.Show("Informe o nome do produto.");
@@ -262,6 +262,87 @@ namespace EstoqueEcommerce
             }
         }
 
+        private void btnAtualizar_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtIdProduto.Text, out int id))
+            {
+                MessageBox.Show("Selecione um produto para atualizar.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtNomeProduto.Text))
+            {
+                MessageBox.Show("Informe o nome do produto.");
+                return;
+            }
+
+            if (!decimal.TryParse(txtPrecoVenda.Text, out decimal preco) || preco <= 0)
+            {
+                MessageBox.Show("Informe um preço de venda válido.");
+                return;
+            }
+
+            if (cmbCategoria.SelectedValue == null)
+            {
+                MessageBox.Show("Selecione uma categoria.");
+                return;
+            }
+
+            if (cmbMarca.SelectedValue == null)
+            {
+                MessageBox.Show("Selecione uma marca.");
+                return;
+            }
+
+            try
+            {
+                ConexaoBanco banco = new ConexaoBanco();
+
+                using (var conexao = banco.ObterConexao())
+                {
+                    conexao.Open();
+
+                    string sql = @"UPDATE dbo.PRODUTO
+                          SET id_categoria = @categoria,
+                              id_marca = @marca,
+                              nome = @nome,
+                              descricao = @descricao,
+                              composicao_tecido = @composicao,
+                              preco_venda = @preco,
+                              ativo = @ativo
+                          WHERE id_produto = @id";
+
+                    using (var comando = new SqlCommand(sql, conexao))
+                    {
+                        comando.Parameters.AddWithValue("@id", id);
+                        comando.Parameters.AddWithValue("@categoria", cmbCategoria.SelectedValue);
+                        comando.Parameters.AddWithValue("@marca", cmbMarca.SelectedValue);
+                        comando.Parameters.AddWithValue("@nome", txtNomeProduto.Text.Trim());
+                        comando.Parameters.AddWithValue("@descricao", txtDescricao.Text.Trim());
+                        comando.Parameters.AddWithValue("@composicao", txtComposicaoTecido.Text.Trim());
+                        comando.Parameters.AddWithValue("@preco", preco);
+                        comando.Parameters.AddWithValue("@ativo", chkAtivo.Checked);
+
+                        int linhasAfetadas = comando.ExecuteNonQuery();
+
+                        if (linhasAfetadas == 0)
+                        {
+                            MessageBox.Show("Produto não encontrado.");
+                            return;
+                        }
+                    }
+                }
+
+                MessageBox.Show("Produto atualizado com sucesso!");
+
+                CarregarProdutos();
+                LimparCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao atualizar produto: " + ex.Message);
+            }
+        }
     }
-    }
+}
 

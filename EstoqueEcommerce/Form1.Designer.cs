@@ -136,6 +136,7 @@
             btnAtualizar.TabIndex = 16;
             btnAtualizar.Text = "Atualizar";
             btnAtualizar.UseVisualStyleBackColor = true;
+            btnAtualizar.Click += btnAtualizar_Click;
             // 
             // btnCadastrar_Click
             // 
