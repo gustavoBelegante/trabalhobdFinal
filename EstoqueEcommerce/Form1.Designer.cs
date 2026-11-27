@@ -30,6 +30,7 @@
         {
             button1 = new Button();
             tabPage1 = new TabPage();
+            btnLimpar = new Button();
             dgvProdutos = new DataGridView();
             btnExcluir = new Button();
             btnAtualizar = new Button();
@@ -67,6 +68,7 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(btnLimpar);
             tabPage1.Controls.Add(dgvProdutos);
             tabPage1.Controls.Add(btnExcluir);
             tabPage1.Controls.Add(btnAtualizar);
@@ -94,6 +96,16 @@
             tabPage1.Text = "Produtos";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnLimpar
+            // 
+            btnLimpar.Location = new Point(481, 312);
+            btnLimpar.Name = "btnLimpar";
+            btnLimpar.Size = new Size(150, 35);
+            btnLimpar.TabIndex = 19;
+            btnLimpar.Text = "Limpar";
+            btnLimpar.UseVisualStyleBackColor = true;
+            btnLimpar.Click += btnLimpar_Click;
+            // 
             // dgvProdutos
             // 
             dgvProdutos.BackgroundColor = Color.White;
@@ -102,9 +114,10 @@
             dgvProdutos.MultiSelect = false;
             dgvProdutos.Name = "dgvProdutos";
             dgvProdutos.RowHeadersWidth = 51;
-            dgvProdutos.SelectionMode = DataGridViewSelectionMode.FullColumnSelect;
+            dgvProdutos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvProdutos.Size = new Size(950, 250);
             dgvProdutos.TabIndex = 18;
+            dgvProdutos.CellClick += dgvProdutos_CellClick;
             // 
             // btnExcluir
             // 
@@ -165,6 +178,7 @@
             // 
             // txtComposicaoTecido
             // 
+            txtComposicaoTecido.BackColor = SystemColors.HighlightText;
             txtComposicaoTecido.Location = new Point(257, 145);
             txtComposicaoTecido.Name = "txtComposicaoTecido";
             txtComposicaoTecido.Size = new Size(193, 27);
@@ -317,5 +331,6 @@
         private Button btnAtualizar;
         private Button btnCadastrar;
         private DataGridView dgvProdutos;
+        private Button btnLimpar;
     }
 }
