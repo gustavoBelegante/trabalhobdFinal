@@ -343,6 +343,68 @@ namespace EstoqueEcommerce
                 MessageBox.Show("Erro ao atualizar produto: " + ex.Message);
             }
         }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtIdProduto.Text, out int id))
+            {
+                MessageBox.Show("Selecione um produto para excluir.");
+                return;
+            }
+
+            DialogResult resposta = MessageBox.Show(
+                "Deseja realmente excluir o produto " + txtNomeProduto.Text + "?",
+                "Confirmar exclusão",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (resposta != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                ConexaoBanco banco = new ConexaoBanco();
+
+                using (var conexao = banco.ObterConexao())
+                {
+                    conexao.Open();
+
+                    string sql = @"DELETE FROM dbo.PRODUTO
+                          WHERE id_produto = @id";
+
+                    using (var comando = new SqlCommand(sql, conexao))
+                    {
+                        comando.Parameters.AddWithValue("@id", id);
+
+                        int linhasAfetadas = comando.ExecuteNonQuery();
+
+                        if (linhasAfetadas == 0)
+                        {
+                            MessageBox.Show("Produto não encontrado.");
+                            return;
+                        }
+                    }
+                }
+
+                MessageBox.Show("Produto excluído com sucesso!");
+
+                CarregarProdutos();
+                LimparCampos();
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                MessageBox.Show(
+                    "Não é possível excluir este produto, pois ele possui registros vinculados."
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao excluir produto: " + ex.Message);
+            }
+        }
     }
 }
 
