@@ -23,6 +23,10 @@ GO
 -- 3. COR
 CREATE TABLE COR (
     id_cor TINYINT IDENTITY(1,1) NOT NULL,
+    nome_cor VARCHAR(40) NOT NULL,
+    codigo_hex CHAR(7) NOT NULL,
+    CONSTRAINT PK_Cor PRIMARY KEY (id_cor),
+    CONSTRAINT UQ_Cor_Nome UNIQUE (nome_cor)
     nome_cor VARCHAR(40) NOT NULL
 );
 GO
