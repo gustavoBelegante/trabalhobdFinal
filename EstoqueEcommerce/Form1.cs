@@ -192,7 +192,76 @@ namespace EstoqueEcommerce
 
         private void btnLimpar_Click(object sender, EventArgs e)
         {
-
+            LimparCampos();
         }
+
+        private void btnCadastrar_Click_Click(object sender, EventArgs e)
+        {
+        
+            if (string.IsNullOrWhiteSpace(txtNomeProduto.Text))
+            {
+                MessageBox.Show("Informe o nome do produto.");
+                return;
+            }
+
+            if (!decimal.TryParse(txtPrecoVenda.Text, out decimal preco) || preco <= 0)
+            {
+                MessageBox.Show("Informe um preço de venda válido.");
+                return;
+            }
+
+            if (cmbCategoria.SelectedIndex == -1)
+            {
+                MessageBox.Show("Selecione uma categoria.");
+                return;
+            }
+
+            if (cmbMarca.SelectedIndex == -1)
+            {
+                MessageBox.Show("Selecione uma marca.");
+                return;
+            }
+
+            try
+            {
+                ConexaoBanco banco = new ConexaoBanco();
+
+                using (var conexao = banco.ObterConexao())
+                {
+                    conexao.Open();
+
+                    string sql = @"INSERT INTO dbo.PRODUTO
+                          (id_categoria, id_marca, nome, descricao,
+                           composicao_tecido, preco_venda, ativo)
+                          VALUES
+                          (@categoria, @marca, @nome, @descricao,
+                           @composicao, @preco, @ativo)";
+
+                    using (var comando = new SqlCommand(sql, conexao))
+                    {
+                        comando.Parameters.AddWithValue("@categoria", cmbCategoria.SelectedValue);
+                        comando.Parameters.AddWithValue("@marca", cmbMarca.SelectedValue);
+                        comando.Parameters.AddWithValue("@nome", txtNomeProduto.Text.Trim());
+                        comando.Parameters.AddWithValue("@descricao", txtDescricao.Text.Trim());
+                        comando.Parameters.AddWithValue("@composicao", txtComposicaoTecido.Text.Trim());
+                        comando.Parameters.AddWithValue("@preco", preco);
+                        comando.Parameters.AddWithValue("@ativo", chkAtivo.Checked);
+
+                        comando.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show("Produto cadastrado com sucesso!");
+
+                CarregarProdutos();
+                LimparCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao cadastrar produto: " + ex.Message);
+            }
+        }
+
     }
-}
+    }
+

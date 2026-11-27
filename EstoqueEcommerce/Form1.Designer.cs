@@ -34,7 +34,7 @@
             dgvProdutos = new DataGridView();
             btnExcluir = new Button();
             btnAtualizar = new Button();
-            btnCadastrar = new Button();
+            btnCadastrar_Click = new Button();
             txtIdProduto = new TextBox();
             label7 = new Label();
             chkAtivo = new CheckBox();
@@ -72,7 +72,7 @@
             tabPage1.Controls.Add(dgvProdutos);
             tabPage1.Controls.Add(btnExcluir);
             tabPage1.Controls.Add(btnAtualizar);
-            tabPage1.Controls.Add(btnCadastrar);
+            tabPage1.Controls.Add(btnCadastrar_Click);
             tabPage1.Controls.Add(txtIdProduto);
             tabPage1.Controls.Add(label7);
             tabPage1.Controls.Add(chkAtivo);
@@ -137,14 +137,15 @@
             btnAtualizar.Text = "Atualizar";
             btnAtualizar.UseVisualStyleBackColor = true;
             // 
-            // btnCadastrar
+            // btnCadastrar_Click
             // 
-            btnCadastrar.Location = new Point(9, 312);
-            btnCadastrar.Name = "btnCadastrar";
-            btnCadastrar.Size = new Size(150, 35);
-            btnCadastrar.TabIndex = 15;
-            btnCadastrar.Text = "Cadastrar";
-            btnCadastrar.UseVisualStyleBackColor = true;
+            btnCadastrar_Click.Location = new Point(9, 312);
+            btnCadastrar_Click.Name = "btnCadastrar_Click";
+            btnCadastrar_Click.Size = new Size(150, 35);
+            btnCadastrar_Click.TabIndex = 15;
+            btnCadastrar_Click.Text = "Cadastrar";
+            btnCadastrar_Click.UseVisualStyleBackColor = true;
+            btnCadastrar_Click.Click += btnCadastrar_Click_Click;
             // 
             // txtIdProduto
             // 
@@ -329,7 +330,7 @@
         private CheckBox chkAtivo;
         private Button btnExcluir;
         private Button btnAtualizar;
-        private Button btnCadastrar;
+        private Button btnCadastrar_Click;
         private DataGridView dgvProdutos;
         private Button btnLimpar;
     }
